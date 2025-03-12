@@ -1,31 +1,34 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
+// icon-color: deep-gray; icon-glyph: magic;
+// Variables used by Scriptable.
+// These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: flag-checkered;
 const dataUrl = "https://api.jolpi.ca/ergast/f1/current/next.json";
 const raceIdx = 0
-//// for testing
+
+// for testing// 
 // const dataUrl = "https://api.jolpi.ca/ergast/f1/current/races.json";// 
 // const raceIdx = 4
 
 let widget = await createWidget();
 Script.setWidget(widget);
-//// for testing
 // widget.presentMedium() //Small,Medium,Large,ExtraLarge   
 Script.complete();
 
 async function formatSessionDay(sessionDay) {
     var options = { weekday: 'short' };
-    return sessionDay.toLocaleDateString('en-US', options);
+    return sessionDay.toLocaleDateString('en-GB', options);
 }
 
 async function formatSessionDate(sessionDate) {
     var options = { month: 'numeric', day: 'numeric' };
-    return sessionDate.toLocaleDateString('en-US', options);
+    return sessionDate.toLocaleDateString('en-GB', options);
 }
 
 async function formatSessionTime(sessionTime) {
     var options = { hour12: false, hour: '2-digit', minute:'2-digit' };
-    return sessionTime.toLocaleTimeString('en-US', options);
+    return sessionTime.toLocaleTimeString('en-GB', options);
 }
 
 async function createWidget() {
@@ -39,8 +42,8 @@ async function createWidget() {
     const qualiDateTime = new Date(`${quali.date}T${quali.time}`)
     const now = new Date()
     let headerFont = new Font("Hiragino Sans W7", 16)
-    let titleFont = new Font("Hiragino Sans W7", 10)
-    let bodyFont = new Font("Hiragino Sans W6", 10)
+    let titleFont = new Font("Hiragino Sans W7", 12)
+    let bodyFont = new Font("Hiragino Sans W6", 12)
 
     const headerStack = widget.addStack()
     headerStack.layoutHorizontally()
@@ -48,7 +51,7 @@ async function createWidget() {
     const headerCell = headerStack.addStack()
     headerCell.layoutHorizontally()
     //headerCell.backgroundColor = HEADER_COLOR
-    headerCell.size = new Size(175,0)
+    headerCell.size = new Size(300,30)
     headerCell.addSpacer()
     //headerCell.lineLimit = 1
       
@@ -57,15 +60,22 @@ async function createWidget() {
     textElement.font = headerFont
     textElement.minimumScaleFactor = .1
     textElement.lineLimit = 1
+    textElement.textColor = Color.red()
 
     headerCell.addSpacer()
     //headerStack.addSpacer(2) // between cells
+    
+    //let titleRow = widget.addText(race.raceName.toUpperCase());
+    //titleRow.font = titleFont;
+    //titleRow.textColor = Color.white();
+    //titleRow.minimumScaleFactor = .1;
     widget.addSpacer(4);
+
 
     let body = widget.addStack()
 	body.layoutVertically()
 	//change: width,height (0 = auto size)
-	body.size = new Size(175,0)
+	body.size = new Size(300,0)
 	body.cornerRadius = 1
 	//body.borderWidth = 1
 	//body.borderColor = Color.red()
@@ -82,6 +92,7 @@ async function createWidget() {
         //currentRow.addSpacer()
       
         cell[i] = []
+
         for(let k=0; k<maxColumns; k++){
 			//keep the cells all the same height
             let currentCell = currentRow.addStack()
@@ -106,8 +117,10 @@ async function createWidget() {
             cell[i][k].centerAlignText()
             cell[i][k].font = bodyFont
             cell[i][k].textColor = Color.white()
+            cell[i][k].text = "cell["+i+"]["+k+"]"
             cell[i][k].lineLimit = 1
             cell[i][k].minimumScaleFactor = .2
+            
             
             //right spacer for cell text-line
             cellTextLine.addSpacer()
@@ -128,6 +141,7 @@ async function createWidget() {
 
 	//bottom spacer after last row
 	//body.addSpacer()
+
 
     if (Object.hasOwn(race, "Sprint")) {
         fp2sq = "SQ"
@@ -186,6 +200,7 @@ async function createWidget() {
 	cell[3][0].text = await formatSessionTime(fp1DateTime)
 
 	cell[0][1].text = await fp2sq
+	//   cell[0][1].minimumScaleFactor = .6
 	cell[1][1].text = await formatSessionDay(fp2sprintQDateTime)
 	cell[2][1].text = await formatSessionDate(fp2sprintQDateTime)
 	cell[3][1].text = await formatSessionTime(fp2sprintQDateTime)
